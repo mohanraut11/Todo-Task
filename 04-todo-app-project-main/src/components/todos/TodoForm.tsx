@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Task, TimeEntry, SharedWith, Priority } from '@/types/todo';
+import { Task, TimeEntry, SharedWith } from '@/types/todo';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
 import Select from '../ui/Select';
@@ -9,7 +9,6 @@ import { PRIORITIES } from '@/constants/priorities';
 import { useTodoContext } from '@/context/TodoContext';
 import Modal from '../ui/Modal';
 import { DEFAULT_CATEGORIES } from '@/constants/categories';
-import { RecurrencePicker } from './RecurrencePicker';
 import { SubtaskList } from './SubtaskList';
 import { TimeTracker } from './TimeTracker';
 import { ShareModal } from './ShareModal';
@@ -27,7 +26,6 @@ const TodoForm: React.FC<TodoFormProps> = ({ isOpen, onClose }) => {
     description: '',
     priority: 'medium',
     category: DEFAULT_CATEGORIES[0].name,
-    recurrence: 'none',
     subtasks: [],
     timeEntries: [],
     sharedWith: [],
@@ -82,16 +80,11 @@ const TodoForm: React.FC<TodoFormProps> = ({ isOpen, onClose }) => {
       setTask({
         ...state.editingTask,
         activeTracking: state.editingTask.activeTracking || null,
-        recurrence: state.editingTask.recurrence || 'none',
       });
       setTrackingMode(
-        state.editingTask.activeTracking?.countdownDuration !== undefined
-          ? 'countdown'
-          : 'elapsed'
+        state.editingTask.activeTracking?.countdownDuration !== undefined ? 'countdown' : 'elapsed'
       );
-      setCountdownDuration(
-        state.editingTask.activeTracking?.countdownDuration || null
-      );
+      setCountdownDuration(state.editingTask.activeTracking?.countdownDuration || null);
       setElapsedTime(0);
     } else {
       resetForm();
@@ -104,7 +97,6 @@ const TodoForm: React.FC<TodoFormProps> = ({ isOpen, onClose }) => {
       description: '',
       priority: 'medium',
       category: DEFAULT_CATEGORIES[0].name,
-      recurrence: 'none',
       subtasks: [],
       timeEntries: [],
       sharedWith: [],
@@ -140,8 +132,8 @@ const TodoForm: React.FC<TodoFormProps> = ({ isOpen, onClose }) => {
       category: task.category || DEFAULT_CATEGORIES[0].name,
       priority: task.priority || 'medium',
       notes: task.notes,
-      recurrence: task.recurrence || 'none',
-      recurrenceEndDate: task.recurrenceEndDate,
+      recurrence: 'none',
+      recurrenceEndDate: undefined,
       subtasks: task.subtasks || [],
       timeEntries: task.timeEntries || [],
       sharedWith: task.sharedWith || [],
@@ -180,8 +172,7 @@ const TodoForm: React.FC<TodoFormProps> = ({ isOpen, onClose }) => {
   const handleStopTracking = (duration?: number) => {
     if (task.activeTracking) {
       const endTime = new Date();
-      const calculatedDuration =
-        duration ?? calculateDuration(new Date(task.activeTracking.start));
+      const calculatedDuration = duration ?? calculateDuration(new Date(task.activeTracking.start));
       const newEntry: TimeEntry = {
         id: Date.now().toString(),
         start: new Date(task.activeTracking.start),
@@ -203,74 +194,122 @@ const TodoForm: React.FC<TodoFormProps> = ({ isOpen, onClose }) => {
       isOpen={isOpen}
       onClose={handleClose}
       title={state.editingTask ? 'Edit Task' : 'Create a New Task'}
-      className="max-w-2xl w-full mx-4 bg-white dark:bg-gray-800 rounded-xl shadow-lg"
+      className='max-w-2xl w-full mx-4 bg-white dark:bg-gray-800 rounded-xl shadow-lg'
     >
-      <form onSubmit={handleSubmit} className="p-6 space-y-8 overflow-y-auto">
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+      <form onSubmit={handleSubmit} className='p-6 space-y-8'>
+        <div className='space-y-4'>
+          <h3 className='text-lg font-semibold text-gray-900 dark:text-gray-100'>
             Basic Information
           </h3>
-          <div className="space-y-4">
+          <div className='space-y-4'>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Task Title <span className="text-red-500">*</span>
+              <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'>
+                Task Title <span className='text-red-500'>*</span>
               </label>
               <Input
                 value={task.title || ''}
                 onChange={(e) => setTask({ ...task, title: e.target.value })}
                 error={errors.title}
                 required
-                placeholder="Name your project"
-                className="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-indigo-500 transition-all"
+                placeholder='Enter task title'
+                className='w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-indigo-500 transition-all'
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Description
+              <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'>
+                Add More Details
               </label>
               <textarea
                 value={task.description || ''}
                 onChange={(e) => setTask({ ...task, description: e.target.value })}
                 rows={3}
-                placeholder="Write a brief summary"
-                className="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-indigo-500 transition-all p-3 resize-y"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Priority <span className="text-red-500">*</span>
-              </label>
-              <Select
-                value={task.priority}
-                onChange={(e) => setTask({ ...task, priority: e.target.value as Priority })}
-                options={PRIORITIES}
-                required
-                className="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-indigo-500 transition-all"
+                placeholder='Enter task description'
+                className='w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-indigo-500 transition-all p-3 resize-y'
               />
             </div>
           </div>
         </div>
 
-        <div className="flex justify-between items-center">
+        <div className='space-y-4'>
+          <h3 className='text-lg font-semibold text-gray-900 dark:text-gray-100'>
+            Categorization
+          </h3>
+          <div className='grid grid-cols-1 sm:grid-cols-3 gap-4'>
+            <div>
+              <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'>
+                Priority
+              </label>
+              <Select
+                value={task.priority}
+                onChange={(e) =>
+                  setTask({ ...task, priority: e.target.value as 'high' | 'medium' | 'low' })
+                }
+                options={PRIORITIES.map((p) => ({
+                  value: p.value,
+                  label: p.label,
+                }))}
+                className='w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-indigo-500 transition-all'
+              />
+            </div>
+            <div>
+              <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'>
+                Category
+              </label>
+              <Select
+                value={task.category}
+                onChange={(e) => setTask({ ...task, category: e.target.value })}
+                options={state.categories.map((c) => ({
+                  value: c.name,
+                  label: c.name,
+                }))}
+                className='w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-indigo-500 transition-all'
+              />
+            </div>
+            <div>
+              <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'>
+                Due Date
+              </label>
+              <Input
+                type='date'
+                value={
+                  task.dueDate instanceof Date
+                    ? task.dueDate.toISOString().split('T')[0]
+                    : task.dueDate || ''
+                }
+                onChange={(e) =>
+                  setTask({
+                    ...task,
+                    dueDate: e.target.value ? new Date(e.target.value) : undefined,
+                  })
+                }
+                className='w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-indigo-500 transition-all'
+              />
+            </div>
+          </div>
+        </div>
+
+      
+
+        <div className='flex justify-between items-center'>
           <Button
-            variant="ghost"
+            variant='ghost'
             onClick={() => setIsShareModalOpen(true)}
-            className="text-indigo-600 dark:text-indigo-400 border-indigo-500 dark:border-indigo-400 hover:bg-indigo-50 dark:hover:bg-gray-700 transition-all"
+            className='text-indigo-600 dark:text-indigo-400 border-indigo-500 dark:border-indigo-400 hover:bg-indigo-50 dark:hover:bg-gray-700 transition-all'
           >
             Share Task
           </Button>
-          <div className="flex space-x-3">
+          <div className='flex space-x-3'>
             <Button
-              variant="ghost"
+              variant='ghost'
               onClick={handleClose}
-              type="button"
-              className="px-4 py-2 text-gray-600 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all"
+              type='button'
+              className='px-4 py-2 text-gray-600 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all'
             >
               Cancel
             </Button>
             <Button
-              type="submit"
-              className="px-4 py-2 bg-indigo-600 text-white hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 transition-all"
+              type='submit'
+              className='px-4 py-2 bg-indigo-600 text-white hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 transition-all'
             >
               {state.editingTask ? 'Update Task' : 'Create Task'}
             </Button>

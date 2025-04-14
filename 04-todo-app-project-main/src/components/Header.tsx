@@ -24,7 +24,7 @@ const Header = () => {
         </div>
 
         {/* App name centered */}
-        <h1 className='text-2xl font-bold tracking-wide mx-auto'>TaskFlow</h1>
+        <h1 className='text-2xl font-bold tracking-wide mx-auto'>ToDo App</h1>
 
         <div className='flex items-center gap-4'>
           {isAuthenticated ? (

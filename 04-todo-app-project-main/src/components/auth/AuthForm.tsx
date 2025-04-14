@@ -67,15 +67,16 @@ const AuthForm: React.FC<AuthFormProps> = ({ isLogin = true }) => {
         </Button>
       </form>
       <div className='mt-4 text-center text-sm text-gray-600 dark:text-gray-400'>
-        <p>
+        {/* Optionally, add a link to reset the password or a different page */}
+        {/* <p>
           Don't have an account?{' '}
           <Link
-            href='/login'
+            href='/register'  // If you have a register page
             className='text-blue-600 hover:underline dark:text-blue-400'
           >
-            Go to Login
+            Sign up here
           </Link>
-        </p>
+        </p> */}
       </div>
     </div>
   );
