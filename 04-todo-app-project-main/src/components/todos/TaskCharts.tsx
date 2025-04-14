@@ -34,10 +34,7 @@ export const TaskCharts = () => {
       name: 'Pending',
       value: tasks.filter((t) => t.status === 'pending').length,
     },
-    {
-      name: 'In Progress',
-      value: tasks.filter((t) => t.status === 'in-progress').length,
-    },
+    
     {
       name: 'Completed',
       value: tasks.filter((t) => t.status === 'completed').length,

@@ -98,7 +98,6 @@ export default function Home() {
           </div>
         </div>
         <TodoStats />
-        <TodoFilters />
         <TodoList onAddTask={() => setIsFormOpen(true)} />
         <TaskCharts />
         <TodoForm isOpen={isFormOpen} onClose={() => setIsFormOpen(false)} />
