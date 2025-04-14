@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import Modal  from '../ui/Modal';
-import Input  from '../ui/Input';
-import  Button  from '../ui/Button';
-import  Select from '../ui/Select';
+import Modal from '../ui/Modal';
+import Input from '../ui/Input';
+import Button from '../ui/Button';
+import Select from '../ui/Select';
 import { SharedWith } from '@/types/todo';
 
 interface ShareModalProps {
@@ -28,7 +28,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
     const newSharedWith = [
       ...sharedWith,
       {
-        userId: Date.now().toString(), // In real app, this would be from API
+        userId: Date.now().toString(),
         email,
         permission,
       },
@@ -50,7 +50,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder='User email'
-            className='flex-1'
+            className='flex-1 border-teal-300 focus:border-teal-500 focus:ring-teal-500'
             type='email'
           />
           <Select
@@ -60,21 +60,26 @@ export const ShareModal: React.FC<ShareModalProps> = ({
               { value: 'view', label: 'View' },
               { value: 'edit', label: 'Edit' },
             ]}
+            className='border-teal-300 focus:border-teal-500 focus:ring-teal-500 text-teal-800'
           />
-          <Button onClick={handleAddShare}>Add</Button>
+          <Button className='bg-teal-600 text-white hover:bg-teal-700'>
+            Add
+          </Button>
         </div>
+
         <div className='space-y-2'>
           {sharedWith.map((user) => (
             <div
               key={user.userId}
-              className='flex justify-between items-center'
+              className='flex justify-between items-center p-2 border border-teal-100 rounded-md bg-teal-50'
             >
-              <span>{user.email}</span>
+              <span className='text-teal-800 font-medium'>{user.email}</span>
               <div className='flex items-center space-x-2'>
-                <span className='text-sm text-gray-500'>{user.permission}</span>
+                <span className='text-sm text-teal-600'>{user.permission}</span>
                 <Button
                   variant='ghost'
                   size='sm'
+                  className='text-teal-600 hover:text-teal-800'
                   onClick={() => handleRemoveShare(user.userId)}
                 >
                   Remove
@@ -83,8 +88,14 @@ export const ShareModal: React.FC<ShareModalProps> = ({
             </div>
           ))}
         </div>
+
         <div className='flex justify-end'>
-          <Button onClick={onClose}>Done</Button>
+          <Button
+            onClick={onClose}
+            className='bg-teal-500 text-white hover:bg-teal-600'
+          >
+            Done
+          </Button>
         </div>
       </div>
     </Modal>

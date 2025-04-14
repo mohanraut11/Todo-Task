@@ -5,7 +5,7 @@ import { Task, TimeEntry, SharedWith, Priority } from '@/types/todo';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
 import Select from '../ui/Select';
-import { PRIORITIES } from '@/constants/priorities'; // Ensure this import is correct
+import { PRIORITIES } from '@/constants/priorities';
 import { useTodoContext } from '@/context/TodoContext';
 import Modal from '../ui/Modal';
 import { DEFAULT_CATEGORIES } from '@/constants/categories';
@@ -25,7 +25,7 @@ const TodoForm: React.FC<TodoFormProps> = ({ isOpen, onClose }) => {
   const [task, setTask] = useState<Partial<Task>>({
     title: '',
     description: '',
-    priority: 'medium',  // Default priority
+    priority: 'medium',
     category: DEFAULT_CATEGORIES[0].name,
     recurrence: 'none',
     subtasks: [],
@@ -36,15 +36,10 @@ const TodoForm: React.FC<TodoFormProps> = ({ isOpen, onClose }) => {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-  const [trackingMode, setTrackingMode] = useState<'elapsed' | 'countdown'>(
-    'elapsed'
-  );
-  const [countdownDuration, setCountdownDuration] = useState<number | null>(
-    null
-  );
+  const [trackingMode, setTrackingMode] = useState<'elapsed' | 'countdown'>('elapsed');
+  const [countdownDuration, setCountdownDuration] = useState<number | null>(null);
   const [elapsedTime, setElapsedTime] = useState(0);
 
-  // Real-time elapsed time effect with type guards
   useEffect(() => {
     let interval: NodeJS.Timeout | undefined;
 
@@ -60,13 +55,13 @@ const TodoForm: React.FC<TodoFormProps> = ({ isOpen, onClose }) => {
         trackingMode === 'countdown' &&
         task.activeTracking.countdownDuration !== undefined
       ) {
-        const countdownDuration = task.activeTracking.countdownDuration; // Store locally as number
+        const countdownDuration = task.activeTracking.countdownDuration;
         interval = setInterval(() => {
           const elapsed = calculateDuration(startDate);
           const remaining = countdownDuration - elapsed;
           setElapsedTime(remaining > 0 ? remaining : 0);
           if (remaining <= 0) {
-            handleStopTracking(countdownDuration); // Use the stored number
+            handleStopTracking(countdownDuration);
           }
         }, 1000);
       }
@@ -143,7 +138,7 @@ const TodoForm: React.FC<TodoFormProps> = ({ isOpen, onClose }) => {
       updatedAt: now,
       dueDate: task.dueDate ? new Date(task.dueDate) : undefined,
       category: task.category || DEFAULT_CATEGORIES[0].name,
-      priority: task.priority || 'medium', // Include priority
+      priority: task.priority || 'medium',
       notes: task.notes,
       recurrence: task.recurrence || 'none',
       recurrenceEndDate: task.recurrenceEndDate,
@@ -178,8 +173,7 @@ const TodoForm: React.FC<TodoFormProps> = ({ isOpen, onClose }) => {
         countdownDuration,
       },
     }));
-    if (countdownDuration !== undefined)
-      setCountdownDuration(countdownDuration);
+    if (countdownDuration !== undefined) setCountdownDuration(countdownDuration);
     setElapsedTime(0);
   };
 
@@ -226,7 +220,7 @@ const TodoForm: React.FC<TodoFormProps> = ({ isOpen, onClose }) => {
                 onChange={(e) => setTask({ ...task, title: e.target.value })}
                 error={errors.title}
                 required
-                placeholder="e.g., Finish project report"
+                placeholder="Name your project"
                 className="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-indigo-500 transition-all"
               />
             </div>
@@ -236,11 +230,9 @@ const TodoForm: React.FC<TodoFormProps> = ({ isOpen, onClose }) => {
               </label>
               <textarea
                 value={task.description || ''}
-                onChange={(e) =>
-                  setTask({ ...task, description: e.target.value })
-                }
+                onChange={(e) => setTask({ ...task, description: e.target.value })}
                 rows={3}
-                placeholder="Add details about your task (optional)"
+                placeholder="Write a brief summary"
                 className="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-indigo-500 transition-all p-3 resize-y"
               />
             </div>
@@ -250,18 +242,14 @@ const TodoForm: React.FC<TodoFormProps> = ({ isOpen, onClose }) => {
               </label>
               <Select
                 value={task.priority}
-                onChange={(e) =>
-                  setTask({ ...task, priority: e.target.value as Priority })
-                }
-                                options={PRIORITIES}
+                onChange={(e) => setTask({ ...task, priority: e.target.value as Priority })}
+                options={PRIORITIES}
                 required
                 className="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-indigo-500 transition-all"
               />
             </div>
           </div>
         </div>
-
-        {/* Keep previous sections like Categorization, Scheduling, Additional Details */}
 
         <div className="flex justify-between items-center">
           <Button

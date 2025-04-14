@@ -37,7 +37,8 @@ const TodoList: React.FC<TodoListProps> = ({ onAddTask }) => {
 
   return (
     <div className='mt-6'>
-      <div className='flex justify-end mb-4'>
+      {/* Center-align the Add Task button */}
+      <div className='flex justify-center mb-4'>
         <Button onClick={onAddTask} className='flex items-center'>
           <PlusIcon className='h-4 w-4 mr-1' />
           Add Task
@@ -47,25 +48,28 @@ const TodoList: React.FC<TodoListProps> = ({ onAddTask }) => {
       {filteredTasks.length === 0 ? (
         <div className='text-center py-12'>
           <h3 className='text-lg font-medium text-gray-500 dark:text-gray-400'>
-            No tasks found
+            No tasks 
           </h3>
           <p className='mt-1 text-sm text-gray-400 dark:text-gray-500'>
-            Try adjusting your filters or add a new task
-          </p>
+          No tasks found. Time to add something to your to-do list!          </p>
         </div>
       ) : (
         <div className='space-y-3'>
           {filteredTasks.map((task) => (
-            <TodoCard
+            <div
               key={task.id}
-              task={task}
-              index={state.tasks.findIndex((t) => t.id === task.id)}
-              isDragged={task.id === draggedId}
-              isHovered={task.id === hoveredId}
-              onDragStart={handleDragStart}
-              onDragOver={(e) => handleDragOver(e, task.id)}
-              onDrop={(e) => handleDrop(e, task.id)}
-            />
+              className='bg-white p-4 rounded-lg shadow-md border border-gray-200 dark:bg-gray-800 dark:border-gray-700 transition-all duration-200 ease-in-out'
+            >
+              <TodoCard
+                task={task}
+                index={state.tasks.findIndex((t) => t.id === task.id)}
+                isDragged={task.id === draggedId}
+                isHovered={task.id === hoveredId}
+                onDragStart={handleDragStart}
+                onDragOver={(e) => handleDragOver(e, task.id)}
+                onDrop={(e) => handleDrop(e, task.id)}
+              />
+            </div>
           ))}
         </div>
       )}

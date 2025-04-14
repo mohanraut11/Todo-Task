@@ -23,10 +23,10 @@ export const TodoFilters = () => {
   };
 
   return (
-    <div className='mb-6 bg-white p-4 rounded-lg shadow dark:bg-gray-800'>
+    <div className='mb-6 bg-blue-50 p-4 rounded-lg shadow border border-blue-200'>
       <div className='flex items-center justify-between mb-4'>
-        <h3 className='text-lg font-medium flex items-center'>
-          <Filter className='h-5 w-5 mr-2' />
+        <h3 className='text-lg font-semibold text-blue-700 flex items-center'>
+          <Filter className='h-5 w-5 mr-2 text-blue-600' />
           Filters
         </h3>
       </div>
@@ -63,7 +63,7 @@ export const TodoFilters = () => {
           label='Search'
           value={state.filterOptions.search}
           onChange={handleSearchChange}
-          placeholder='Search tasks...'
+          placeholder='Search'
         />
       </div>
     </div>

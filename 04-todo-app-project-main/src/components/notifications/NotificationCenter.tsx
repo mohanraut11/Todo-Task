@@ -19,7 +19,6 @@ export const NotificationCenter = () => {
   const { tasks } = useTodos();
 
   useEffect(() => {
-    // Check for due tasks
     const dueTasks = tasks.filter(
       (task) =>
         task.dueDate &&
@@ -56,26 +55,26 @@ export const NotificationCenter = () => {
   };
 
   return (
-    <div className='relative'>
+    <div className='fixed top-4 left-4 z-50'>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className='p-2 rounded-full relative'
+        className='p-2 rounded-full relative hover:bg-yellow-100'
       >
-        <BellIcon className='h-5 w-5' />
+        <BellIcon className='h-5 w-5 text-yellow-600' />
         {unreadCount > 0 && (
-          <span className='absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center'>
+          <span className='absolute top-0 right-0 bg-yellow-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center'>
             {unreadCount}
           </span>
         )}
       </button>
       {isOpen && (
-        <div className='absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg z-50 dark:bg-gray-800'>
-          <div className='p-2 border-b dark:border-gray-700'>
+        <div className='absolute left-0 mt-2 w-64 bg-yellow-50 rounded-md shadow-lg z-50 border border-yellow-200 dark:bg-yellow-100'>
+          <div className='p-2 border-b border-yellow-200'>
             <div className='flex justify-between items-center'>
-              <h3 className='font-medium'>Notifications</h3>
+              <h3 className='font-medium text-yellow-800'>Notifications</h3>
               <button
                 onClick={markAllAsRead}
-                className='text-sm text-blue-500 hover:underline'
+                className='text-sm text-yellow-600 hover:underline'
               >
                 Mark all as read
               </button>
@@ -83,20 +82,20 @@ export const NotificationCenter = () => {
           </div>
           <div className='max-h-64 overflow-y-auto'>
             {notifications.length === 0 ? (
-              <div className='p-4 text-center text-gray-500'>
+              <div className='p-4 text-center text-yellow-600'>
                 No notifications
               </div>
             ) : (
               notifications.map((notification) => (
                 <div
                   key={notification.id}
-                  className={`p-3 border-b hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-700 ${
-                    !notification.read ? 'bg-blue-50 dark:bg-blue-900/20' : ''
+                  className={`p-3 border-b border-yellow-200 hover:bg-yellow-100 cursor-pointer ${
+                    !notification.read ? 'bg-yellow-100' : ''
                   }`}
                   onClick={() => markAsRead(notification.id)}
                 >
-                  <div className='text-sm'>{notification.message}</div>
-                  <div className='text-xs text-gray-500 mt-1'>
+                  <div className='text-sm text-yellow-800'>{notification.message}</div>
+                  <div className='text-xs text-yellow-600 mt-1'>
                     {format(new Date(notification.timestamp), 'MMM d, h:mm a')}
                   </div>
                 </div>
